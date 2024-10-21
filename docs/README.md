@@ -284,6 +284,34 @@ accelerate launch  main.py \
     --save_generations \
     --save_generations_path generations_py.json
 ```
+
+```bash
+#multiple-clj,multiple-cpp,multiple-cs,multiple-d,multiple-dart,
+#multiple-elixir,multiple-go,multiple-hs,multiple-java,
+#multiple-jl,multiple-js,multiple-lua,multiple-mlpl,
+#multiple-php,multiple-py,multiple-r,multiple-rb,
+#multiple-rkt,multiple-rs,multiple-scala,
+#multiple-sh,multiple-swift,multiple-ts
+LANGUAGE=cpp
+MULTIPLE_LANG=cpp
+MODEL_PATH=/data/DeepSeek-Coder/experiments/deepseek-coder-6.7b-instruct/$LANGUAGE
+CUDA_VISIBLE_DEVICES=4,5,6,7 accelerate launch --main_process_port 29511 --num_processes=1 main.py \
+    --model $MODEL_PATH  \
+    --precision fp16 \
+    --max_memory_per_gpu auto \
+    --tasks multiple-$MULTIPLE_LANG \
+    --max_length_generation 650 \
+    --temperature 0.2   \
+    --do_sample True  \
+    --n_samples 200  \
+    --batch_size 50  \
+    --trust_remote_code \
+    --generation_only \
+    --save_generations \
+    --save_generations_path /workspace/DeepSeek-Coder/experiments/deepseek-coder-6.7b-instruct/generations_$LANGUAGE.json
+```
+
+
 To run the container (here from image `evaluation-harness-multiple`) to evaluate on `generations_py.json`, or another file mount it with `-v`, specify `n_samples` and allow code execution with `--allow_code_execution` (and add the number of problems `--limit`  if it was used during generation):
 ```bash
 $ sudo docker run -v $(pwd)/generations_py.json:/app/generations_py.json:ro -it evaluation-harness-multiple python3 main.py \

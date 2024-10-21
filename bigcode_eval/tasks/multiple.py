@@ -39,30 +39,54 @@ _CITATION = """
 """
 
 LANGUAGES = [
-    "py",
-    "sh",
-    "clj"
-    "cpp",
-    "cs",
-    "d",
-    "dart",
-    "elixir",
-    "go",
-    "hs",
-    "java",
-    "js",
-    "jl",
-    "lua",
-    "ml"
-    "pl",
-    "php",
-    "r",
-    "rkt",
-    "rb",
-    "rs",
-    "scala",
-    "swift",
-    "ts",
+    "humaneval-py",
+    "humaneval-sh",
+    "humaneval-clj",
+    "humaneval-cpp",
+    "humaneval-cs",
+    "humaneval-d",
+    "humaneval-dart",
+    "humaneval-elixir",
+    "humaneval-go",
+    "humaneval-hs",
+    "humaneval-java",
+    "humaneval-js",
+    "humaneval-jl",
+    "humaneval-lua",
+    "humaneval-ml",
+    "humaneval-pl",
+    "humaneval-php",
+    "humaneval-r",
+    "humaneval-rkt",
+    "humaneval-rb",
+    "humaneval-rs",
+    "humaneval-scala",
+    "humaneval-swift",
+    "humaneval-ts",
+    "mbpp-py",
+    "mbpp-sh",
+    "mbpp-clj",
+    "mbpp-cpp",
+    "mbpp-cs",
+    "mbpp-d",
+    "mbpp-dart",
+    "mbpp-elixir",
+    "mbpp-go",
+    "mbpp-hs",
+    "mbpp-java",
+    "mbpp-js",
+    "mbpp-jl",
+    "mbpp-lua",
+    "mbpp-ml",
+    "mbpp-pl",
+    "mbpp-php",
+    "mbpp-r",
+    "mbpp-rkt",
+    "mbpp-rb",
+    "mbpp-rs",
+    "mbpp-scala",
+    "mbpp-swift",
+    "mbpp-ts",
 ]
 
 
@@ -71,13 +95,13 @@ def create_all_tasks():
     :return: {task_name: task}
         e.g. {multiple-py: Task, multiple-java: Task}
     """
-    return {f"multiple-{language}": create_task(language) for language in LANGUAGES}
+    return {f"multiple-{language}": create_task(*language.split("-")) for language in LANGUAGES}
 
 
-def create_task(language):
+def create_task(mode, language):
     class MultiPLE(GeneralMultiPLE):
         def __init__(self):
-            super().__init__(language)
+            super().__init__(mode, language)
 
     return MultiPLE
 
@@ -91,10 +115,11 @@ class GeneralMultiPLE(Task):
     DATASET_NAME = None
     DATASET_REVISION = "ff5c146da05f10bc69b9ce393b77f381b3825d1b"
 
-    def __init__(self, language):
+    def __init__(self, mode, language):
         self.language = language
-        self.DATASET_NAME = f"humaneval-{language}"
+        self.DATASET_NAME = f"{mode}-{language}"
         # we need the dataset to get stop words for each language
+        print(f"loading dataset: {self.DATASET_NAME}")
         self.dataset = load_dataset(
             GeneralMultiPLE.DATASET_PATH,
             self.DATASET_NAME,

@@ -125,7 +125,7 @@ If you already have the generations in a json file from this evaluation harness 
 Below is an example, be mind of specifying arguments proper to the task you are evaluating on, and note that `model` value here only serves for documenting the experiment. Also add `--n_samples` to specify the number of samples to evaluate per problem (usually the same value used in generation).
 
 ```bash
-accelerate launch  main.py   --tasks mbpp  --allow_code_execution  --load_generations_path generations.json  --model incoder-temperature-08
+accelerate launch  main.py --tasks mbpp  --allow_code_execution  --load_generations_path generations.json  --model incoder-temperature-08
 ```
 
 ## Docker containers
@@ -174,6 +174,130 @@ accelerate launch  main.py \
     --generation_only \
     --save_generations \
     --save_generations_path generations_py.json
+```
+
+```
+"py",
+"sh",
+"clj",
+"cpp",
+"cs",
+"d",
+"dart",
+"elixir",
+"go",
+"hs",
+"java",
+"js",
+"jl",
+"lua",
+"ml"
+"pl",
+"php",
+"r",
+"rkt",
+"rb",
+"rs",
+"scala",
+"swift",
+"ts",
+```
+
+```bash
+LANGUAGE=cpp
+MULTIPLE_LANG=cpp
+TASK=multiple-humaneval-$MULTIPLE_LANG
+MODEL_PATH=/data/DeepSeek-Coder/experiments/deepseek-coder-6.7b-instruct/$LANGUAGE/checkpoint-606
+GENERATION_PATH=/workspace/DeepSeek-Coder/experiments/deepseek-coder-6.7b-instruct/generations_$TASK.json
+CUDA_VISIBLE_DEVICES=4,5,6,7 accelerate launch --main_process_port 29511 --num_processes=1 main.py \
+    --model $MODEL_PATH  \
+    --precision fp16 \
+    --max_memory_per_gpu auto \
+    --tasks $TASK \
+    --max_length_generation 650 \
+    --temperature 0.2   \
+    --do_sample True  \
+    --n_samples 200  \
+    --batch_size 100  \
+    --trust_remote_code \
+    --allow_code_execution \
+    --save_generations \
+    --save_generations_path $GENERATION_PATH
+    
+LANGUAGE=cpp
+MULTIPLE_LANG=cpp
+TASK=multiple-mbpp-$MULTIPLE_LANG
+MODEL_PATH=/workspace/DeepSeek-Coder/experiments/deepseek-coder-6.7b-instruct/$LANGUAGE/checkpoint-606
+GENERATION_PATH=/workspace/DeepSeek-Coder/experiments/deepseek-coder-6.7b-instruct/generations_$TASK.json
+CUDA_VISIBLE_DEVICES=4,5,6,7 accelerate launch --main_process_port 29511 --num_processes=1 main.py \
+    --model $MODEL_PATH  \
+    --precision fp16 \
+    --max_memory_per_gpu auto \
+    --tasks $TASK \
+    --max_length_generation 650 \
+    --temperature 0.2   \
+    --do_sample True  \
+    --n_samples 200  \
+    --batch_size 100  \
+    --trust_remote_code \
+    --allow_code_execution \
+    --save_generations \
+    --save_generations_path $GENERATION_PATH
+```
+
+
+```bash
+LANGUAGE=cpp;
+MULTIPLE_LANG=cpp;
+TASK=multiple-humaneval-$MULTIPLE_LANG;
+MODEL_PATH=/data/DeepSeek-Coder/experiments/deepseek-coder-6.7b-instruct/$LANGUAGE/checkpoint-606;
+GENERATION_PATH=/workspace/DeepSeek-Coder/experiments/deepseek-coder-6.7b-instruct/generations_cpp_multiple-cpp.json;
+METRIC_OUTPUT_PATH=/workspace/DeepSeek-Coder/experiments/deepseek-coder-6.7b-instruct/${LANGUAGE}_humaneval_evaluation_results.json;
+echo $GENERATION_PATH
+accelerate launch --main_process_port 29611 --num_processes=1 main.py \
+  --tasks $TASK  \
+  --precision fp16 \
+  --allow_code_execution  \
+  --load_generations_path $GENERATION_PATH \
+  --metric_output_path $METRIC_OUTPUT_PATH \
+  --model $MODEL_PATH
+
+LANGUAGE=cpp;
+MULTIPLE_LANG=cpp;
+TASK=multiple-mbpp-$MULTIPLE_LANG;
+MODEL_PATH=/data/DeepSeek-Coder/experiments/deepseek-coder-6.7b-instruct/$LANGUAGE/checkpoint-606;
+GENERATION_PATH=/workspace/DeepSeek-Coder/experiments/deepseek-coder-6.7b-instruct/generations_multiple-mbpp-cpp_multiple-mbpp-cpp.json;
+METRIC_OUTPUT_PATH=/workspace/DeepSeek-Coder/experiments/deepseek-coder-6.7b-instruct/${LANGUAGE}_mbpp_evaluation_results.json;
+echo $GENERATION_PATH
+accelerate launch --main_process_port 29611 --num_processes=1 main.py \
+  --tasks $TASK  \
+  --precision fp16 \
+  --allow_code_execution  \
+  --load_generations_path $GENERATION_PATH \
+  --metric_output_path $METRIC_OUTPUT_PATH \
+  --model $MODEL_PATH
+```
+
+```bash # baseline
+LANGUAGE=cpp
+MULTIPLE_LANG=cpp
+TASK=multiple-mbpp-$MULTIPLE_LANG
+MODEL_PATH=/workspace/DeepSeek-Coder/experiments/deepseek-coder-6.7b-instruct/$LANGUAGE/checkpoint-606
+GENERATION_PATH=/workspace/DeepSeek-Coder/experiments/deepseek-coder-6.7b-instruct/generations_$TASK.json
+CUDA_VISIBLE_DEVICES=4,5,6,7 accelerate launch --main_process_port 29511 --num_processes=1 main.py \
+    --model $MODEL_PATH  \
+    --precision fp16 \
+    --max_memory_per_gpu auto \
+    --tasks $TASK \
+    --max_length_generation 650 \
+    --temperature 0.2   \
+    --do_sample True  \
+    --n_samples 200  \
+    --batch_size 100  \
+    --trust_remote_code \
+    --allow_code_execution \
+    --save_generations \
+    --save_generations_path $GENERATION_PATH
 ```
 
 To run the container (here from image `evaluation-harness-multiple`) to evaluate on `generations_py.json`, or another file mount it with `-v`, specify `n_samples` and allow code execution with `--allow_code_execution` (and add the number of problems `--limit`  if it was used during generation):
