@@ -1,4 +1,5 @@
 import json
+import logging
 from math import ceil
 
 from typing import List, Optional
@@ -7,7 +8,46 @@ from accelerate.utils import set_seed
 from torch.utils.data.dataloader import DataLoader
 from transformers import StoppingCriteria, StoppingCriteriaList
 
-from bigcode_eval.utils import TokenizedDataset, complete_code
+from bigcode_eval.deepseek_utils import language_settings
+from bigcode_eval.utils import TokenizedDataset, complete_code, complete_chat_code
+
+
+# custom: chat formatting
+def build_deepseekcoder_instruction(languge: str, question: str):
+    return '''
+Please continue to complete the function. You are not allowed to modify the given code and do the completion only. Please return all completed function in a codeblock. Here is the given code to do completion:
+```{}
+{}
+```
+'''.strip().format(languge.lower(), question.strip())
+
+# new_dataset = my_dataset.map(my_processing_func, batched=True, fn_kwargs={"model": model, "tokenizer": tokenizer})
+def format_prompts(examples, indices, n_copies, tokenizer):
+    formated_examples = []
+    names = examples["name"]
+    languages = examples["language"]
+    prompts = examples["prompt"]
+    stop_tokens = examples["stop_tokens"]
+
+    for index, name, language, prompt, stop_token in zip(indices, names, languages, prompts, stop_tokens):
+        langauge = "go" if language == "go_test.go" else language
+        for _ in range(n_copies):
+            prompt = build_deepseekcoder_instruction(language_settings[language]['full_name'], prompt)
+            inputs = tokenizer.apply_chat_template(
+                [{'role': 'user', 'content': prompt}],
+                add_generation_prompt=True,
+                tokenize=True,
+                return_tensors="pt"
+            )
+            print(inputs)
+            formated_examples.append({
+                "ids": inputs["input_ids"],
+                "task_id": index,
+                "input_len": inputs["attention_mask"].sum(),
+                "prompt": prompt,
+                "lang": language
+            })
+    return formated_examples
 
 
 class EndOfFunctionCriteria(StoppingCriteria):
@@ -108,6 +148,10 @@ def parallel_generations(
         print(f"number of problems for this task is {n_tasks}")
     n_copies = ceil(args.n_samples / args.batch_size)
 
+    # custom
+    # ds_tokenized = dataset.map(format_prompts, batched=True, with_indices=True,
+    #                            fn_kwargs={"tokenizer": tokenizer, "n_copies": n_copies})
+
     ds_tokenized = TokenizedDataset(
         task,
         dataset,
@@ -138,6 +182,7 @@ def parallel_generations(
         # model.to() is not supported for 8bit and 4bit models
         model, ds_loader = accelerator.prepare(model, ds_loader)
 
+    # generations = complete_chat_code(
     generations = complete_code(
         task,
         accelerator,

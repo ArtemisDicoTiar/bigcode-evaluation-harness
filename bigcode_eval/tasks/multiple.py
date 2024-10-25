@@ -128,9 +128,9 @@ class GeneralMultiPLE(Task):
             self.DATASET_NAME,
             revision=self.DATASET_REVISION)
         print(f"loaded dataset: {self.dataset}")
-        stop_words = self.dataset["test"][0]["stop_tokens"] + ["<file_sep>"]
+        # stop_words = self.dataset["test"][0]["stop_tokens"] + ["<file_sep>"]
         # custom: line 30 /DeepSeek-Coder/Evaluation/HumanEval/eval_instruct.py
-        # stop_words = self.dataset["test"][0]["stop_tokens"] + ["<|EOT|>"]
+        stop_words = self.dataset["test"][0]["stop_tokens"] + ["<|EOT|>"]
         super().__init__(
             stop_words=stop_words,
             requires_execution=True,
