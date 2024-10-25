@@ -10,9 +10,12 @@ Homepage: https://nuprl.github.io/MultiPL-E/
 import json
 import os
 import re
+import shutil
 import tempfile
+from datetime import datetime
 from multiprocessing import cpu_count
 from pathlib import Path
+from tempfile import tempdir
 from time import time
 
 import numpy as np
@@ -124,7 +127,10 @@ class GeneralMultiPLE(Task):
             GeneralMultiPLE.DATASET_PATH,
             self.DATASET_NAME,
             revision=self.DATASET_REVISION)
+        print(f"loaded dataset: {self.dataset}")
         stop_words = self.dataset["test"][0]["stop_tokens"] + ["<file_sep>"]
+        # custom: line 30 /DeepSeek-Coder/Evaluation/HumanEval/eval_instruct.py
+        # stop_words = self.dataset["test"][0]["stop_tokens"] + ["<|EOT|>"]
         super().__init__(
             stop_words=stop_words,
             requires_execution=True,
@@ -177,7 +183,12 @@ class GeneralMultiPLE(Task):
             if i < len(generations)
         ]
         # a common temp dir for all the problems
-        temp_dir = tempfile.gettempdir()
+        now = datetime.now()
+        current_time = now.strftime("%H:%M:%S")
+
+        temp_dir = Path(tempfile.gettempdir()) / self.language / current_time
+        temp_dir.mkdir(parents=True, exist_ok=True)
+        temp_dir = str(temp_dir.absolute())
         list_files = []
         for (prompt_name, generation, reference) in zip(
             prompts_names, generations, references
@@ -218,4 +229,5 @@ class GeneralMultiPLE(Task):
             for k, v in zip([1, 10, 100], result)
             if k <= len(generations[0])
         }
+        shutil.rmtree(temp_dir)
         return results

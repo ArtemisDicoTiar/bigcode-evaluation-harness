@@ -207,11 +207,12 @@ accelerate launch  main.py \
 LANGUAGE=cpp
 MULTIPLE_LANG=cpp
 TASK=multiple-humaneval-$MULTIPLE_LANG
-MODEL_PATH=/data/DeepSeek-Coder/experiments/deepseek-coder-6.7b-instruct/$LANGUAGE/checkpoint-606
-GENERATION_PATH=/workspace/DeepSeek-Coder/experiments/deepseek-coder-6.7b-instruct/generations_$TASK.json
-CUDA_VISIBLE_DEVICES=4,5,6,7 accelerate launch --main_process_port 29511 --num_processes=1 main.py \
-    --model $MODEL_PATH  \
-    --precision fp16 \
+GENERATION_PATH=/workspace/DeepSeek-Coder/experiments/deepseek-coder-6.7b-instruct/results/generations_$TASK.json
+MODEL_PATH=/workspace/DeepSeek-Coder/experiments/deepseek-coder-6.7b-instruct/$LANGUAGE
+METRIC_OUTPUT_PATH=/workspace/DeepSeek-Coder/experiments/deepseek-coder-6.7b-instruct/results/evaluation_results_$TASK.json;
+CUDA_VISIBLE_DEVICES=4,5 accelerate launch --main_process_port 29511 --num_processes=1 main.py \
+    --model $MODEL_PATH \
+    --precision bf16 \
     --max_memory_per_gpu auto \
     --tasks $TASK \
     --max_length_generation 650 \
@@ -222,16 +223,19 @@ CUDA_VISIBLE_DEVICES=4,5,6,7 accelerate launch --main_process_port 29511 --num_p
     --trust_remote_code \
     --allow_code_execution \
     --save_generations \
-    --save_generations_path $GENERATION_PATH
+    --save_generations_path $GENERATION_PATH \
+    --metric_output_path $METRIC_OUTPUT_PATH; PING $TASK DONE;
+
     
 LANGUAGE=cpp
 MULTIPLE_LANG=cpp
 TASK=multiple-mbpp-$MULTIPLE_LANG
-MODEL_PATH=/workspace/DeepSeek-Coder/experiments/deepseek-coder-6.7b-instruct/$LANGUAGE/checkpoint-606
-GENERATION_PATH=/workspace/DeepSeek-Coder/experiments/deepseek-coder-6.7b-instruct/generations_$TASK.json
-CUDA_VISIBLE_DEVICES=4,5,6,7 accelerate launch --main_process_port 29511 --num_processes=1 main.py \
-    --model $MODEL_PATH  \
-    --precision fp16 \
+GENERATION_PATH=/workspace/DeepSeek-Coder/experiments/deepseek-coder-6.7b-instruct/baseline/generations_$TASK.json
+MODEL_PATH=/workspace/DeepSeek-Coder/experiments/deepseek-coder-6.7b-instruct/$LANGUAGE
+METRIC_OUTPUT_PATH=/workspace/DeepSeek-Coder/experiments/deepseek-coder-6.7b-instruct/baseline/${TASK}_evaluation_results.json;
+CUDA_VISIBLE_DEVICES=6,7 accelerate launch --main_process_port 29511 --num_processes=1 main.py \
+    --model $MODEL_PATH \
+    --precision bf16 \
     --max_memory_per_gpu auto \
     --tasks $TASK \
     --max_length_generation 650 \
@@ -242,7 +246,8 @@ CUDA_VISIBLE_DEVICES=4,5,6,7 accelerate launch --main_process_port 29511 --num_p
     --trust_remote_code \
     --allow_code_execution \
     --save_generations \
-    --save_generations_path $GENERATION_PATH
+    --save_generations_path $GENERATION_PATH \
+    --metric_output_path $METRIC_OUTPUT_PATH; PING $TASK DONE;
 ```
 
 
@@ -279,14 +284,14 @@ accelerate launch --main_process_port 29611 --num_processes=1 main.py \
 ```
 
 ```bash # baseline
-LANGUAGE=cpp
-MULTIPLE_LANG=cpp
-TASK=multiple-mbpp-$MULTIPLE_LANG
-MODEL_PATH=/workspace/DeepSeek-Coder/experiments/deepseek-coder-6.7b-instruct/$LANGUAGE/checkpoint-606
-GENERATION_PATH=/workspace/DeepSeek-Coder/experiments/deepseek-coder-6.7b-instruct/generations_$TASK.json
-CUDA_VISIBLE_DEVICES=4,5,6,7 accelerate launch --main_process_port 29511 --num_processes=1 main.py \
-    --model $MODEL_PATH  \
-    --precision fp16 \
+LANGUAGE=scala
+MULTIPLE_LANG=scala
+TASK=multiple-humaneval-$MULTIPLE_LANG
+GENERATION_PATH=/workspace/DeepSeek-Coder/experiments/deepseek-coder-6.7b-instruct/baseline/generations_$TASK.json
+METRIC_OUTPUT_PATH=/workspace/DeepSeek-Coder/experiments/deepseek-coder-6.7b-instruct/baseline/${TASK}_evaluation_results.json;
+CUDA_VISIBLE_DEVICES=0,1 accelerate launch --main_process_port 29511 --num_processes=1 main.py \
+    --model deepseek-ai/deepseek-coder-6.7b-instruct  \
+    --precision bf16 \
     --max_memory_per_gpu auto \
     --tasks $TASK \
     --max_length_generation 650 \
@@ -297,7 +302,46 @@ CUDA_VISIBLE_DEVICES=4,5,6,7 accelerate launch --main_process_port 29511 --num_p
     --trust_remote_code \
     --allow_code_execution \
     --save_generations \
-    --save_generations_path $GENERATION_PATH
+    --save_generations_path $GENERATION_PATH \
+    --metric_output_path $METRIC_OUTPUT_PATH
+
+##################################################    
+
+LANGUAGE=scala
+MULTIPLE_LANG=scala
+TASK=multiple-mbpp-$MULTIPLE_LANG
+GENERATION_PATH=/workspace/DeepSeek-Coder/experiments/deepseek-coder-6.7b-instruct/baseline/generations_$TASK.json
+METRIC_OUTPUT_PATH=/workspace/DeepSeek-Coder/experiments/deepseek-coder-6.7b-instruct/baseline/${TASK}_evaluation_results.json;
+CUDA_VISIBLE_DEVICES=2,3 accelerate launch --main_process_port 29512 --num_processes=1 main.py \
+    --model deepseek-ai/deepseek-coder-6.7b-instruct  \
+    --precision bf16 \
+    --max_memory_per_gpu auto \
+    --tasks $TASK \
+    --max_length_generation 650 \
+    --temperature 0.2   \
+    --do_sample True  \
+    --n_samples 200  \
+    --batch_size 100  \
+    --trust_remote_code \
+    --allow_code_execution \
+    --save_generations \
+    --save_generations_path $GENERATION_PATH \
+    --metric_output_path $METRIC_OUTPUT_PATH
+    
+    
+LANGUAGE=rust;
+MULTIPLE_LANG=rs;
+TASK=multiple-humaneval-$MULTIPLE_LANG;
+GENERATION_PATH=/workspace/DeepSeek-Coder/experiments/deepseek-coder-6.7b-instruct/baseline/generations_${TASK}_${TASK}.json;
+METRIC_OUTPUT_PATH=/workspace/DeepSeek-Coder/experiments/deepseek-coder-6.7b-instruct/${TASK}_evaluation_results.json;
+echo $GENERATION_PATH
+accelerate launch --main_process_port 29611 --num_processes=1 main.py \
+  --model deepseek-ai/deepseek-coder-6.7b-instruct  \
+  --tasks $TASK  \
+  --precision bf16 \
+  --allow_code_execution  \
+  --load_generations_path $GENERATION_PATH \
+  --metric_output_path $METRIC_OUTPUT_PATH
 ```
 
 To run the container (here from image `evaluation-harness-multiple`) to evaluate on `generations_py.json`, or another file mount it with `-v`, specify `n_samples` and allow code execution with `--allow_code_execution` (and add the number of problems `--limit`  if it was used during generation):
