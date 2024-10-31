@@ -50,6 +50,11 @@ def parse_args():
         help="AutoModel to use, it can be causal or seq2seq",
     )
     parser.add_argument(
+        "--sft_path",
+        default=None,
+        help="Sparse Fine-Tuned diff weight path"
+    )
+    parser.add_argument(
         "--peft_model",
         type=str,
         default=None,
@@ -359,6 +364,14 @@ def main():
             tokenizer.bos_token = "<s>"
             tokenizer.bos_token_id = 1
             print("Changing bos_token to <s>")
+
+        if args.sft_path is not None:
+            from sft import SFT
+            model.resize_token_embeddings(len(tokenizer))
+
+            loaded_sft = SFT(args.sft_path)
+            print(f'Applying task fine-tuning {args.sft_path}')
+            loaded_sft.apply(model, with_abs=True)
 
         evaluator = Evaluator(accelerator, model, tokenizer, args)
 

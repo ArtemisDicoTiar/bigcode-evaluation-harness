@@ -20,8 +20,8 @@ ts --gpus 2 sh ./evaluate.sh scala scala mbpp baseline deepseek-ai/deepseek-code
 
 
 # todos
-#ts --gpus 2 sh ./evaluate.sh php php humaneval results /workspace/DeepSeek-Coder/experiments/deepseek-coder-6.7b-instruct/php;
-#ts --gpus 2 sh ./evaluate.sh php php mbpp results /workspace/DeepSeek-Coder/experiments/deepseek-coder-6.7b-instruct/php;
+ts --gpus 2 sh ./evaluate.sh php php humaneval results /workspace/DeepSeek-Coder/experiments/deepseek-coder-6.7b-instruct/php;
+ts --gpus 2 sh ./evaluate.sh php php mbpp results /workspace/DeepSeek-Coder/experiments/deepseek-coder-6.7b-instruct/php;
 
 ts --gpus 2 sh ./evaluate.sh cpp cpp humaneval results /workspace/DeepSeek-Coder/experiments/deepseek-coder-6.7b-instruct/cpp;
 ts --gpus 2 sh ./evaluate.sh cpp cpp mbpp results /workspace/DeepSeek-Coder/experiments/deepseek-coder-6.7b-instruct/cpp;
@@ -32,11 +32,11 @@ ts --gpus 2 sh ./evaluate.sh swift swift mbpp results /workspace/DeepSeek-Coder/
 ts --gpus 2 sh ./evaluate.sh go go humaneval results /workspace/DeepSeek-Coder/experiments/deepseek-coder-6.7b-instruct/go;
 ts --gpus 2 sh ./evaluate.sh go go mbpp results /workspace/DeepSeek-Coder/experiments/deepseek-coder-6.7b-instruct/go;
 
-ts --gpus 2 sh ./evaluate.sh rust rs humaneval results DicoTiar/deepseek-coder-6.7b-instruct-full-ft-rust;
-ts --gpus 2 sh ./evaluate.sh rust rs mbpp results DicoTiar/deepseek-coder-6.7b-instruct-full-ft-rust;
+ts --gpus 2 sh ./evaluate.sh rust rs humaneval results /workspace/DeepSeek-Coder/experiments/deepseek-coder-6.7b-instruct/rust;
+ts --gpus 2 sh ./evaluate.sh rust rs mbpp results /workspace/DeepSeek-Coder/experiments/deepseek-coder-6.7b-instruct/rust;
 
-ts --gpus 2 sh ./evaluate.sh scala scala humaneval results /data/DeepSeek-Coder/experiments/deepseek-coder-6.7b-instruct/scala;
-ts --gpus 2 sh ./evaluate.sh scala scala mbpp results /data/DeepSeek-Coder/experiments/deepseek-coder-6.7b-instruct/scala;
+ts --gpus 2 sh ./evaluate.sh scala scala humaneval results /workspace/DeepSeek-Coder/experiments/deepseek-coder-6.7b-instruct/scala;
+ts --gpus 2 sh ./evaluate.sh scala scala mbpp results /workspace/DeepSeek-Coder/experiments/deepseek-coder-6.7b-instruct/scala;
 ```
 
 ~~~
