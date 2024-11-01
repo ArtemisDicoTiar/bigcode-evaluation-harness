@@ -3,14 +3,21 @@ MULTIPLE_LANG=$2;
 TARGET_TASK=$3;
 SAVE_FOLDER=$4;
 MODEL_PATH=$5;
+MODEL_NAME=$6;
+EXPERIMENT_NAME=$7;
 
 source ~/.zshrc
 va bigcode-evaluation-harness
 
-TASK=multiple-${TARGET_TASK}-${MULTIPLE_LANG}
-GENERATION_PATH=/workspace/DeepSeek-Coder/experiments/deepseek-coder-6.7b-base/${SAVE_FOLDER}/generations_$TASK.json
+if [$MULTIPLE_LANG = "py"]; then
+  TASK=${TARGET_TASK}
+else
+  TASK=multiple-${TARGET_TASK}-${MULTIPLE_LANG}
+fi;
+#TASK=multiple-${TARGET_TASK}-${MULTIPLE_LANG}
+GENERATION_PATH=/workspace/DeepSeek-Coder/${EXPERIMENT_NAME}/${MODEL_NAME}/${SAVE_FOLDER}/generations_$TASK.json
 MODEL_PATH=$MODEL_PATH
-METRIC_OUTPUT_DIR=/workspace/DeepSeek-Coder/experiments/deepseek-coder-6.7b-base/${SAVE_FOLDER}
+METRIC_OUTPUT_DIR=/workspace/DeepSeek-Coder/${EXPERIMENT_NAME}/${MODEL_NAME}/${SAVE_FOLDER}
 mkdir -p ${METRIC_OUTPUT_DIR}
 METRIC_OUTPUT_PATH=${METRIC_OUTPUT_DIR}/evaluation_results_$TASK.json;
 
