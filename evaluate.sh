@@ -9,11 +9,12 @@ EXPERIMENT_NAME=$7;
 source ~/.zshrc
 va bigcode-evaluation-harness
 
-if [$MULTIPLE_LANG = "py"]; then
+if [ $MULTIPLE_LANG = "py" ]; then
   TASK=${TARGET_TASK}
 else
   TASK=multiple-${TARGET_TASK}-${MULTIPLE_LANG}
 fi;
+
 #TASK=multiple-${TARGET_TASK}-${MULTIPLE_LANG}
 GENERATION_PATH=/workspace/DeepSeek-Coder/${EXPERIMENT_NAME}/${MODEL_NAME}/${SAVE_FOLDER}/generations_$TASK.json
 MODEL_PATH=$MODEL_PATH
@@ -30,7 +31,7 @@ else
       --precision bf16 \
       --max_memory_per_gpu auto \
       --tasks $TASK \
-      --max_length_generation 650 \
+      --max_length_generation 1024 \
       --temperature 0.2  \
       --do_sample True  \
       --n_samples 200  \
@@ -41,4 +42,6 @@ else
       --save_generations_path $GENERATION_PATH \
       --metric_output_path $METRIC_OUTPUT_PATH;
 fi;
+
+sh /workspace/DeepSeek-Coder/merge_results.sh $METRIC_OUTPUT_DIR;
 PING $TASK DONE;

@@ -350,11 +350,16 @@ def main():
                 raise ValueError("No eos_token or bos_token found")
         try:
             tokenizer.pad_token = tokenizer.eos_token
-            
+
         # Some models like CodeGeeX2 have pad_token as a read-only property
         except AttributeError:
             print("Not setting pad_token to eos_token")
             pass
+
+        print("PAD Token:", tokenizer.pad_token, tokenizer.pad_token_id)
+        print("BOS Token", tokenizer.bos_token, tokenizer.bos_token_id)
+        print("EOS Token", tokenizer.eos_token, tokenizer.eos_token_id)
+
         WIZARD_LLAMA_MODELS = [
             "WizardLM/WizardCoder-Python-34B-V1.0",
             "WizardLM/WizardCoder-34B-V1.0",
