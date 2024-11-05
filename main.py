@@ -272,6 +272,7 @@ def main():
             "revision": args.revision,
             "trust_remote_code": args.trust_remote_code,
             "token": args.use_auth_token,
+            # "attn_implementation": "flash_attention_2"
         }
         if args.load_in_8bit:
             print("Loading model in 8bit")

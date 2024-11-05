@@ -32,7 +32,12 @@ def cache_set(program: str, result: dict):
 
 def cached_eval_script(problem, index) -> dict:
     # here prompt is already included in completions
-    program = problem["completions"][index] + "\n" + problem["tests"]
+    if problem["language"] == "java" and \
+            problem["completions"][index].split("\n")[-1] == problem["tests"].split("\n")[0]:
+        program = problem["completions"][index] + "\n" + "\n".join(problem["tests"].split("\n")[1:])
+    else:
+        program = problem["completions"][index] + "\n" + problem["tests"]
+
     CACHE_LOCK.acquire(True)
     cached = cache_get(program)
     if cached is not None:
