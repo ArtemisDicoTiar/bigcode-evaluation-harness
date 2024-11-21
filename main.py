@@ -2,6 +2,7 @@ import os
 import fnmatch
 import json
 import warnings
+from pprint import pprint
 
 import datasets
 import torch
@@ -236,6 +237,7 @@ def get_gpus_max_memory(max_memory, num_gpus):
 
 def main():
     args = parse_args()
+    pprint(args)
     transformers.logging.set_verbosity_error()
     datasets.logging.set_verbosity_error()
 
@@ -373,7 +375,7 @@ def main():
 
         if args.sft_path is not None:
             from sft import SFT
-            model.resize_token_embeddings(len(tokenizer))
+            # model.resize_token_embeddings(len(tokenizer))
 
             loaded_sft = SFT(args.sft_path)
             print(f'Applying task fine-tuning {args.sft_path}')

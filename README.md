@@ -80,6 +80,14 @@ This evaluation harness can also be used in an evaluation only mode, you can use
 
 The evaluation part (solutions execution) for [MultiPL-E](https://github.com/nuprl/MultiPL-E) requires extra dependencies for some programming languages, we provide a Dockerfile with all dependencies, see section [Docker](#docker-containers) for more details.
 
+To run java evaluation, especially multipl-e, you need to install the following dependencies:
+```bash
+sudo apt-get install openjdk-11-jdk
+```
+then download javatuples-1.2.jar
+
+relocate the jar file to the following path: `/usr/multiple/javatuples-1.2.jar`
+
 ## Usage
 You can use this evaluation harness to generate text solutions to code benchmarks with your model, to evaluate (and execute) the solutions or to do both. While it is better to use GPUs for the generation, the evaluation only requires CPUs. So it might be beneficial to separate these two steps. By default both generation and evaluation are performed.
 
