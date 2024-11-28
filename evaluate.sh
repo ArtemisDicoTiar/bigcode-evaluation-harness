@@ -7,7 +7,8 @@ MODEL_NAME=$6;
 EXPERIMENT_NAME=$7;
 IS_PEFT=${8:-false};
 IS_SFT=${9:-false};
-USE_LARGEST_CHECKPOINT=${10:-true};
+IS_PTUNING=${10:-false};
+USE_LARGEST_CHECKPOINT=${11:-true};
 
 # peft and sft are mutually exclusive
 if [ $IS_PEFT = "true" ] && [ $IS_SFT = "true" ]; then
@@ -41,6 +42,7 @@ echo "MODEL_NAME: $MODEL_NAME";
 echo "EXPERIMENT_NAME: $EXPERIMENT_NAME";
 echo "IS_PEFT: $IS_PEFT";
 echo "IS_SFT: $IS_SFT";
+echo "IS_PTUNING: $IS_PTUNING";
 echo "TASK: $TASK";
 echo "GENERATION_PATH: $GENERATION_PATH";
 echo "METRIC_OUTPUT_PATH: $METRIC_OUTPUT_PATH";
@@ -76,7 +78,28 @@ if [ -f $GENERATION_PATH ]; then
 else
   if [ $IS_PEFT = "true" ]; then
     echo "Running PEFT evaluation";
-    accelerate launch --main_process_port 29511 --num_processes=1 \
+    if [ $IS_PTUNING = "true" ]; then
+      echo "Running PTuning evaluation";
+      accelerate launch --main_process_port 29511 --num_processes=1 \
+        /workspace/bigcode-evaluation-harness/main.py \
+        --model $MODEL_NAME \
+        --peft_model $MODEL_PATH \
+        --precision bf16 \
+        --max_memory_per_gpu auto \
+        --tasks $TASK \
+        --max_length_generation 1024 \
+        --temperature 0.2  \
+        --do_sample True  \
+        --n_samples 200  \
+        --batch_size 50  \
+        --trust_remote_code \
+        --save_generations \
+        --allow_code_execution \
+        --save_generations_path $GENERATION_PATH \
+        --metric_output_path $METRIC_OUTPUT_PATH \
+        --ptuning;
+    else
+      accelerate launch --main_process_port 29511 --num_processes=1 \
       /workspace/bigcode-evaluation-harness/main.py \
       --model $MODEL_NAME \
       --peft_model $MODEL_PATH \
@@ -93,7 +116,7 @@ else
       --allow_code_execution \
       --save_generations_path $GENERATION_PATH \
       --metric_output_path $METRIC_OUTPUT_PATH;
-
+    fi;
   elif [ $IS_SFT = "true" ]; then
     echo "Running SFT evaluation";
     accelerate launch --main_process_port 29511 --num_processes=1 \
