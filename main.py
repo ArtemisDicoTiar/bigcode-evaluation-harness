@@ -323,8 +323,11 @@ def main():
 
             model = PeftModel.from_pretrained(model, args.peft_model)
             print("Loaded PEFT model. Merging...")
-            model.merge_and_unload()
-            print("Merge complete.")
+            if args.ptuning:
+                pass
+            else:
+                model.merge_and_unload()
+                print("Merge complete.")
 
         if args.left_padding:
             # left padding is required for some models like chatglm3-6b
