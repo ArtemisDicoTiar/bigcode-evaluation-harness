@@ -80,6 +80,28 @@ This evaluation harness can also be used in an evaluation only mode, you can use
 
 The evaluation part (solutions execution) for [MultiPL-E](https://github.com/nuprl/MultiPL-E) requires extra dependencies for some programming languages, we provide a Dockerfile with all dependencies, see section [Docker](#docker-containers) for more details.
 
+## Runner Download
+```bash
+# for java, go, php, cpp, rust, scala
+apt install default-jre default-jdk golang-go php g++ rustc scala
+
+# for swift
+wget https://download.swift.org/swift-5.10.1-release/ubuntu2204/swift-5.10.1-RELEASE/swift-5.10.1-RELEASE-ubuntu22.04.tar.gz
+tar -xzf swift-5.10.1-RELEASE-ubuntu22.04.tar.gz
+mv swift-5.10.1-RELEASE-ubuntu22.04 /usr/share/swift
+echo 'export PATH=/usr/share/swift/usr/bin:$PATH' >> ~/.bashrc
+source ~/.bashrc
+
+# for rust, custom
+curl https://sh.rustup.rs -sSf | sh
+source "$HOME/.cargo/env"
+
+# install java-tuple for java run
+wget https://repo1.maven.org/maven2/org/javatuples/javatuples/1.2/javatuples-1.2.jar
+mkdir -p /usr/multiple
+cp javatuples-1.2.jar /usr/multiple
+```
+
 To run java evaluation, especially multipl-e, you need to install the following dependencies:
 ```bash
 sudo apt-get install openjdk-11-jdk
