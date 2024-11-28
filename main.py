@@ -216,6 +216,11 @@ def parse_args():
         action="store_true",
         help="Don't run generation but benchmark groundtruth (useful for debugging)",
     )
+    parser.add_argument(
+        "--ptuning",
+        action="store_true",
+        help="is p-tuned?",
+    )
     return parser.parse_args()
 
 
