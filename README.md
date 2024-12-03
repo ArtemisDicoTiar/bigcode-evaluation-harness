@@ -96,6 +96,9 @@ source ~/.bashrc
 curl https://sh.rustup.rs -sSf | sh
 source "$HOME/.cargo/env"
 
+# for R
+apt install r-cran-littler
+
 # install java-tuple for java run
 wget https://repo1.maven.org/maven2/org/javatuples/javatuples/1.2/javatuples-1.2.jar
 mkdir -p /usr/multiple

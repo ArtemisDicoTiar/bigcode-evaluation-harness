@@ -88,10 +88,10 @@ else
         --max_memory_per_gpu auto \
         --tasks $TASK \
         --max_length_generation 1024 \
-        --temperature 0.2  \
-        --do_sample True  \
-        --n_samples 200  \
-        --batch_size 50  \
+        --temperature 0  \
+        --do_sample False  \
+        --n_samples 1  \
+        --batch_size 1  \
         --trust_remote_code \
         --save_generations \
         --allow_code_execution \
@@ -107,10 +107,10 @@ else
       --max_memory_per_gpu auto \
       --tasks $TASK \
       --max_length_generation 1024 \
-      --temperature 0.2  \
-      --do_sample True  \
-      --n_samples 200  \
-      --batch_size 50  \
+      --temperature 0  \
+      --do_sample False  \
+      --n_samples 1  \
+      --batch_size 1  \
       --trust_remote_code \
       --save_generations \
       --allow_code_execution \
@@ -127,10 +127,10 @@ else
       --max_memory_per_gpu auto \
       --tasks $TASK \
       --max_length_generation 1024 \
-      --temperature 0.2  \
-      --do_sample True  \
-      --n_samples 200  \
-      --batch_size 50  \
+      --temperature 0  \
+      --do_sample False  \
+      --n_samples 1  \
+      --batch_size 1  \
       --trust_remote_code \
       --save_generations \
       --allow_code_execution \
@@ -146,10 +146,10 @@ else
         --max_memory_per_gpu auto \
         --tasks $TASK \
         --max_length_generation 1024 \
-        --temperature 0.2  \
-        --do_sample True  \
-        --n_samples 200  \
-        --batch_size 50  \
+        --temperature 0  \
+        --do_sample False  \
+        --n_samples 1  \
+        --batch_size 1  \
         --trust_remote_code \
         --save_generations \
         --allow_code_execution \
